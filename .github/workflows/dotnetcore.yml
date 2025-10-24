@@ -18,11 +18,13 @@ jobs:
     - name: Build with dotnet
       run: dotnet build ./eShopOnWeb.sln --configuration Release
     
-    - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v4.6.2
+    - name: dotnet publish
+      run: dotnet publish eShopOnWeb.sln -c Release -o "${{env.DOTNET_ROOT}}/myapp"
+
+    - name: Upload artifact for deployment job
+      uses: actions/upload-artifact@v4
       with:
-        # Artifact name
-        name: eShopOnWeb
-        path: src/Infrastructure/bin/Release/net8.0/
-  
+          name: eShopOnWeb
+          path: ${{env.DOTNET_ROOT}}/myapp
+
 
