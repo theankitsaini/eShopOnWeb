@@ -18,6 +18,10 @@ jobs:
     - name: Build with dotnet
       run: dotnet build ./eShopOnWeb.sln --configuration Release
     
-    # - name: Test with dotnet
-    #   run: dotnet test ./eShopOnWeb.sln --configuration Release
-
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v4.6.2
+      with:
+        # Artifact name
+        name: eShopOnWeb
+        path: eShopOnWeb/eShopOnWeb/src/Infrastructure/bin/Release/net8.0/
+  
