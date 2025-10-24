@@ -4,7 +4,6 @@ on: [push, pull_request, workflow_dispatch]
 
 jobs:
   build:
-
     runs-on: windows-latest
 
     steps:
@@ -18,13 +17,24 @@ jobs:
     - name: Build with dotnet
       run: dotnet build ./eShopOnWeb.sln --configuration Release
     
-    - name: dotnet publish
-      run: dotnet publish eShopOnWeb.sln -c Release -o "${{env.DOTNET_ROOT}}/myapp"
+    # Separate publish step for the Web project
+    - name: dotnet publish Web
+      run: dotnet publish ./src/Web/Web.csproj -c Release -o "${{env.DOTNET_ROOT}}/myapp/Web"
 
-    - name: Upload artifact for deployment job
+    # Separate publish step for the PublicApi project
+    - name: dotnet publish PublicApi
+      run: dotnet publish ./src/PublicApi/PublicApi.csproj -c Release -o "${{env.DOTNET_ROOT}}/myapp/PublicApi"
+
+    # Upload the Web artifact
+    - name: Upload Web artifact for deployment job
       uses: actions/upload-artifact@v4
       with:
-          name: eShopOnWeb
-          path: ${{env.DOTNET_ROOT}}/myapp
-
-
+          name: eShopOnWeb-Web
+          path: ${{env.DOTNET_ROOT}}/myapp/Web
+          
+    # Upload the PublicApi artifact
+    - name: Upload PublicApi artifact for deployment job
+      uses: actions/upload-artifact@v4
+      with:
+          name: eShopOnWeb-PublicApi
+          path: ${{env.DOTNET_ROOT}}/myapp/PublicApi
